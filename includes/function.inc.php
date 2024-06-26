@@ -64,14 +64,15 @@ function userAlreadyExist($conn,$username,$email){
    $retrieveData = mysqli_stmt_get_result($stmt);
    // fetch and store in an associative array
    $row = mysqli_fetch_assoc($retrieveData);
+   mysqli_stmt_close($stmt);
    if ($row) {
     return $row;
    }
    else{
     $result = false;
     return $result;
-
    }
+  
 
 }
 
@@ -90,12 +91,46 @@ function createUser($conn,$name,$email,$username,$pwd){
    // executing statement
    mysqli_stmt_execute($stmt);
 
-   header("location: ../login.php");
+   mysqli_stmt_close($stmt);
+   header("location: ../login.php?error=none");
    exit();
 
 }
 
+function emptyloginInput($username,$pwd){
+  $result = "";
+  if(empty($username) || empty($pwd)){
+  $result= true;
+  }else{
+      $result= false;
+  }
+  return $result ;
+  }
 
+
+  function loginUser($conn, $username, $pwd){
+    $getUser = userAlreadyExist($conn, $username, $username);
+    if($getUser == false){
+      header("location: ../login.php?error=WrongCredentials");
+        exit();
+    }
+    // $Checkpwd= $getUser["pwd"];
+    $unhashPwd = password_verify($pwd, $getUser["pwd"]);
+    if($unhashPwd == false){{
+      header("location: ../login.php?error=WrongPassword");
+      exit();
+    }
+  }
+  else{
+    session_start();
+    $_SESSION["username"]=  $getUser["username"];
+    $_SESSION["name"]=  $getUser["name"];
+    $_SESSION["email"]=  $getUser["email"];
+    header("location: ../index.php");
+    exit();
+  }
+
+}
 
 
 

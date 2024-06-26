@@ -14,23 +14,24 @@ require_once 'dbhandler.inc.php';
 
 
 if (emptySignupInput($name,$email,$username,$pwd,$confirmpwd) !== false) {
-  header("location: ../signup.php?error=emptyinput");
+  header("location: ../signup.php?error=empty-input");
   exit();
 }
 if (InvalidEmail($email) !== false) {
-  header("location: ../signup.php?error=InvalidEmail");
+  header("location: ../signup.php?error=Invalid-Email");
   exit();
 }
 if (InvalidUsername($username) !== false) {
-  header("location: ../signup.php?error=InvalidUsername");
+  header("location: ../signup.php?error=Invalid-Username");
   exit();
 }
 if (pwdMatch($pwd,$confirmpwd) !== false) {
-  header("location: ../signup.php?error=passworddontMatch");
+  header("location: ../signup.php?error=password-dont-Match");
   exit();
 }
 if (userAlreadyExist($conn,$username,$email)) {
-  header("location: ../signup.php?error=userAlreadyExist");
+  header("location: ../signup.php?error=user-Already-Exist");
+
   exit();
 }
 createUser($conn,$name,$email,$username,$pwd);
